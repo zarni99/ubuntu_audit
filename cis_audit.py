@@ -11,6 +11,15 @@ Usage:
     python3 cis_audit.py remediate # Run all remediations
 """
 
+# ANSI color codes
+COLORS = {
+    'GREEN': '\033[92m',  # Green for PASS/SECURE
+    'RED': '\033[91m',    # Red for FAIL/VULNERABLE
+    'YELLOW': '\033[93m', # Yellow for warnings
+    'BLUE': '\033[94m',   # Blue for section headers
+    'RESET': '\033[0m'    # Reset to default color
+}
+
 import sys
 import importlib
 
@@ -52,8 +61,8 @@ def print_section_header(title, description):
     Print a formatted section header
     """
     print("\n" + "=" * 80)
-    print(f"CIS Benchmark Section: {title}")
-    print(f"Description: {description}")
+    print(f"{COLORS['BLUE']}CIS Benchmark Section: {title}{COLORS['RESET']}")
+    print(f"{COLORS['BLUE']}Description: {description}{COLORS['RESET']}")
     print("=" * 80)
 
 
@@ -74,9 +83,9 @@ def run_all_audits():
     
     print("\n" + "=" * 80)
     if all_passed:
-        print("\n✅ All audits completed successfully. System is compliant with benchmarks.")
+        print(f"\n{COLORS['GREEN']}✅ All audits completed successfully. System is compliant with benchmarks.{COLORS['RESET']}")
     else:
-        print("\n⚠️  All audits completed. Some checks failed. Run with 'remediate' to fix issues.")
+        print(f"\n{COLORS['YELLOW']}⚠️  All audits completed. Some checks failed. Run with 'remediate' to fix issues.{COLORS['RESET']}")
     
     return all_passed
 
@@ -94,7 +103,7 @@ def run_all_remediations():
             module_info["module"].run_all_remediations()
     
     print("\n" + "=" * 80)
-    print("\n✅ Remediation completed. Run audit again to verify compliance.")
+    print(f"\n{COLORS['GREEN']}✅ Remediation completed. Run audit again to verify compliance.{COLORS['RESET']}")
 
 
 def main():

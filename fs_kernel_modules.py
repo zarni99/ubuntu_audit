@@ -12,6 +12,15 @@ Each audit function:
 - Prints meaningful status messages
 """
 
+# ANSI color codes
+COLORS = {
+    'GREEN': '\033[92m',  # Green for PASS
+    'RED': '\033[91m',    # Red for FAIL
+    'YELLOW': '\033[93m', # Yellow for warnings
+    'BLUE': '\033[94m',   # Blue for section headers
+    'RESET': '\033[0m'    # Reset to default color
+}
+
 import subprocess
 import os
 import sys
@@ -75,16 +84,16 @@ def check_cramfs():
     
     # Check if module is loaded
     if _is_module_loaded(module_name):
-        print(f"[-] FAIL: {module_name} module is currently loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module is currently loaded{COLORS['RESET']}")
         remediation = f"rmmod {module_name}"
         print(f"    Remediation: {remediation}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is not loaded")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is not loaded{COLORS['RESET']}")
     
     # Check if module is disabled
     if not _is_module_disabled(module_name) and _is_module_available(module_name):
-        print(f"[-] FAIL: {module_name} module can be loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module can be loaded{COLORS['RESET']}")
         remediation_file = f"/etc/modprobe.d/{module_name}.conf"
         remediation_content = _create_remediation_file(module_name)
         remediation = f"echo '{remediation_content}' > {remediation_file}"
@@ -92,7 +101,7 @@ def check_cramfs():
         print(f"    {remediation_content}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is disabled or not available")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is disabled or not available{COLORS['RESET']}")
     
     return True, ""
 
@@ -108,9 +117,9 @@ def remediate_cramfs():
     if _is_module_loaded(module_name):
         stdout, stderr, rc = _run_command(f"rmmod {module_name}")
         if rc == 0:
-            print(f"[+] Successfully unloaded {module_name} module")
+            print(f"{COLORS['GREEN']}[+] Successfully unloaded {module_name} module{COLORS['RESET']}")
         else:
-            print(f"[-] Failed to unload {module_name} module: {stderr}")
+            print(f"{COLORS['RED']}[-] Failed to unload {module_name} module: {stderr}{COLORS['RESET']}")
             return False
     
     # Create or update the configuration file to disable the module
@@ -120,10 +129,10 @@ def remediate_cramfs():
     try:
         with open(remediation_file, 'w') as f:
             f.write(remediation_content)
-        print(f"[+] Successfully created {remediation_file} to disable {module_name}")
+        print(f"{COLORS['GREEN']}[+] Successfully created {remediation_file} to disable {module_name}{COLORS['RESET']}")
         return True
     except Exception as e:
-        print(f"[-] Failed to create {remediation_file}: {str(e)}")
+        print(f"{COLORS['RED']}[-] Failed to create {remediation_file}: {str(e)}{COLORS['RESET']}")
         return False
 
 
@@ -136,16 +145,16 @@ def check_freevxfs():
     
     # Check if module is loaded
     if _is_module_loaded(module_name):
-        print(f"[-] FAIL: {module_name} module is currently loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module is currently loaded{COLORS['RESET']}")
         remediation = f"rmmod {module_name}"
         print(f"    Remediation: {remediation}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is not loaded")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is not loaded{COLORS['RESET']}")
     
     # Check if module is disabled
     if not _is_module_disabled(module_name) and _is_module_available(module_name):
-        print(f"[-] FAIL: {module_name} module can be loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module can be loaded{COLORS['RESET']}")
         remediation_file = f"/etc/modprobe.d/{module_name}.conf"
         remediation_content = _create_remediation_file(module_name)
         remediation = f"echo '{remediation_content}' > {remediation_file}"
@@ -153,7 +162,7 @@ def check_freevxfs():
         print(f"    {remediation_content}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is disabled or not available")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is disabled or not available{COLORS['RESET']}")
     
     return True, ""
 
@@ -169,9 +178,9 @@ def remediate_freevxfs():
     if _is_module_loaded(module_name):
         stdout, stderr, rc = _run_command(f"rmmod {module_name}")
         if rc == 0:
-            print(f"[+] Successfully unloaded {module_name} module")
+            print(f"{COLORS['GREEN']}[+] Successfully unloaded {module_name} module{COLORS['RESET']}")
         else:
-            print(f"[-] Failed to unload {module_name} module: {stderr}")
+            print(f"{COLORS['RED']}[-] Failed to unload {module_name} module: {stderr}{COLORS['RESET']}")
             return False
     
     # Create or update the configuration file to disable the module
@@ -181,10 +190,10 @@ def remediate_freevxfs():
     try:
         with open(remediation_file, 'w') as f:
             f.write(remediation_content)
-        print(f"[+] Successfully created {remediation_file} to disable {module_name}")
+        print(f"{COLORS['GREEN']}[+] Successfully created {remediation_file} to disable {module_name}{COLORS['RESET']}")
         return True
     except Exception as e:
-        print(f"[-] Failed to create {remediation_file}: {str(e)}")
+        print(f"{COLORS['RED']}[-] Failed to create {remediation_file}: {str(e)}{COLORS['RESET']}")
         return False
 
 
@@ -197,16 +206,16 @@ def check_jffs2():
     
     # Check if module is loaded
     if _is_module_loaded(module_name):
-        print(f"[-] FAIL: {module_name} module is currently loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module is currently loaded{COLORS['RESET']}")
         remediation = f"rmmod {module_name}"
         print(f"    Remediation: {remediation}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is not loaded")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is not loaded{COLORS['RESET']}")
     
     # Check if module is disabled
     if not _is_module_disabled(module_name) and _is_module_available(module_name):
-        print(f"[-] FAIL: {module_name} module can be loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module can be loaded{COLORS['RESET']}")
         remediation_file = f"/etc/modprobe.d/{module_name}.conf"
         remediation_content = _create_remediation_file(module_name)
         remediation = f"echo '{remediation_content}' > {remediation_file}"
@@ -214,7 +223,7 @@ def check_jffs2():
         print(f"    {remediation_content}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is disabled or not available")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is disabled or not available{COLORS['RESET']}")
     
     return True, ""
 
@@ -230,9 +239,9 @@ def remediate_jffs2():
     if _is_module_loaded(module_name):
         stdout, stderr, rc = _run_command(f"rmmod {module_name}")
         if rc == 0:
-            print(f"[+] Successfully unloaded {module_name} module")
+            print(f"{COLORS['GREEN']}[+] Successfully unloaded {module_name} module{COLORS['RESET']}")
         else:
-            print(f"[-] Failed to unload {module_name} module: {stderr}")
+            print(f"{COLORS['RED']}[-] Failed to unload {module_name} module: {stderr}{COLORS['RESET']}")
             return False
     
     # Create or update the configuration file to disable the module
@@ -242,10 +251,10 @@ def remediate_jffs2():
     try:
         with open(remediation_file, 'w') as f:
             f.write(remediation_content)
-        print(f"[+] Successfully created {remediation_file} to disable {module_name}")
+        print(f"{COLORS['GREEN']}[+] Successfully created {remediation_file} to disable {module_name}{COLORS['RESET']}")
         return True
     except Exception as e:
-        print(f"[-] Failed to create {remediation_file}: {str(e)}")
+        print(f"{COLORS['RED']}[-] Failed to create {remediation_file}: {str(e)}{COLORS['RESET']}")
         return False
 
 
@@ -258,16 +267,16 @@ def check_hfs():
     
     # Check if module is loaded
     if _is_module_loaded(module_name):
-        print(f"[-] FAIL: {module_name} module is currently loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module is currently loaded{COLORS['RESET']}")
         remediation = f"rmmod {module_name}"
         print(f"    Remediation: {remediation}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is not loaded")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is not loaded{COLORS['RESET']}")
     
     # Check if module is disabled
     if not _is_module_disabled(module_name) and _is_module_available(module_name):
-        print(f"[-] FAIL: {module_name} module can be loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module can be loaded{COLORS['RESET']}")
         remediation_file = f"/etc/modprobe.d/{module_name}.conf"
         remediation_content = _create_remediation_file(module_name)
         remediation = f"echo '{remediation_content}' > {remediation_file}"
@@ -275,7 +284,7 @@ def check_hfs():
         print(f"    {remediation_content}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is disabled or not available")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is disabled or not available{COLORS['RESET']}")
     
     return True, ""
 
@@ -291,9 +300,9 @@ def remediate_hfs():
     if _is_module_loaded(module_name):
         stdout, stderr, rc = _run_command(f"rmmod {module_name}")
         if rc == 0:
-            print(f"[+] Successfully unloaded {module_name} module")
+            print(f"{COLORS['GREEN']}[+] Successfully unloaded {module_name} module{COLORS['RESET']}")
         else:
-            print(f"[-] Failed to unload {module_name} module: {stderr}")
+            print(f"{COLORS['RED']}[-] Failed to unload {module_name} module: {stderr}{COLORS['RESET']}")
             return False
     
     # Create or update the configuration file to disable the module
@@ -303,10 +312,10 @@ def remediate_hfs():
     try:
         with open(remediation_file, 'w') as f:
             f.write(remediation_content)
-        print(f"[+] Successfully created {remediation_file} to disable {module_name}")
+        print(f"{COLORS['GREEN']}[+] Successfully created {remediation_file} to disable {module_name}{COLORS['RESET']}")
         return True
     except Exception as e:
-        print(f"[-] Failed to create {remediation_file}: {str(e)}")
+        print(f"{COLORS['RED']}[-] Failed to create {remediation_file}: {str(e)}{COLORS['RESET']}")
         return False
 
 
@@ -319,16 +328,16 @@ def check_hfsplus():
     
     # Check if module is loaded
     if _is_module_loaded(module_name):
-        print(f"[-] FAIL: {module_name} module is currently loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module is currently loaded{COLORS['RESET']}")
         remediation = f"rmmod {module_name}"
         print(f"    Remediation: {remediation}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is not loaded")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is not loaded{COLORS['RESET']}")
     
     # Check if module is disabled
     if not _is_module_disabled(module_name) and _is_module_available(module_name):
-        print(f"[-] FAIL: {module_name} module can be loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module can be loaded{COLORS['RESET']}")
         remediation_file = f"/etc/modprobe.d/{module_name}.conf"
         remediation_content = _create_remediation_file(module_name)
         remediation = f"echo '{remediation_content}' > {remediation_file}"
@@ -336,7 +345,7 @@ def check_hfsplus():
         print(f"    {remediation_content}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is disabled or not available")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is disabled or not available{COLORS['RESET']}")
     
     return True, ""
 
@@ -352,9 +361,9 @@ def remediate_hfsplus():
     if _is_module_loaded(module_name):
         stdout, stderr, rc = _run_command(f"rmmod {module_name}")
         if rc == 0:
-            print(f"[+] Successfully unloaded {module_name} module")
+            print(f"{COLORS['GREEN']}[+] Successfully unloaded {module_name} module{COLORS['RESET']}")
         else:
-            print(f"[-] Failed to unload {module_name} module: {stderr}")
+            print(f"{COLORS['RED']}[-] Failed to unload {module_name} module: {stderr}{COLORS['RESET']}")
             return False
     
     # Create or update the configuration file to disable the module
@@ -364,10 +373,10 @@ def remediate_hfsplus():
     try:
         with open(remediation_file, 'w') as f:
             f.write(remediation_content)
-        print(f"[+] Successfully created {remediation_file} to disable {module_name}")
+        print(f"{COLORS['GREEN']}[+] Successfully created {remediation_file} to disable {module_name}{COLORS['RESET']}")
         return True
     except Exception as e:
-        print(f"[-] Failed to create {remediation_file}: {str(e)}")
+        print(f"{COLORS['RED']}[-] Failed to create {remediation_file}: {str(e)}{COLORS['RESET']}")
         return False
 
 
@@ -380,16 +389,16 @@ def check_squashfs():
     
     # Check if module is loaded
     if _is_module_loaded(module_name):
-        print(f"[-] FAIL: {module_name} module is currently loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module is currently loaded{COLORS['RESET']}")
         remediation = f"rmmod {module_name}"
         print(f"    Remediation: {remediation}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is not loaded")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is not loaded{COLORS['RESET']}")
     
     # Check if module is disabled
     if not _is_module_disabled(module_name) and _is_module_available(module_name):
-        print(f"[-] FAIL: {module_name} module can be loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module can be loaded{COLORS['RESET']}")
         remediation_file = f"/etc/modprobe.d/{module_name}.conf"
         remediation_content = _create_remediation_file(module_name)
         remediation = f"echo '{remediation_content}' > {remediation_file}"
@@ -397,7 +406,7 @@ def check_squashfs():
         print(f"    {remediation_content}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is disabled or not available")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is disabled or not available{COLORS['RESET']}")
     
     return True, ""
 
@@ -413,9 +422,9 @@ def remediate_squashfs():
     if _is_module_loaded(module_name):
         stdout, stderr, rc = _run_command(f"rmmod {module_name}")
         if rc == 0:
-            print(f"[+] Successfully unloaded {module_name} module")
+            print(f"{COLORS['GREEN']}[+] Successfully unloaded {module_name} module{COLORS['RESET']}")
         else:
-            print(f"[-] Failed to unload {module_name} module: {stderr}")
+            print(f"{COLORS['RED']}[-] Failed to unload {module_name} module: {stderr}{COLORS['RESET']}")
             return False
     
     # Create or update the configuration file to disable the module
@@ -425,10 +434,10 @@ def remediate_squashfs():
     try:
         with open(remediation_file, 'w') as f:
             f.write(remediation_content)
-        print(f"[+] Successfully created {remediation_file} to disable {module_name}")
+        print(f"{COLORS['GREEN']}[+] Successfully created {remediation_file} to disable {module_name}{COLORS['RESET']}")
         return True
     except Exception as e:
-        print(f"[-] Failed to create {remediation_file}: {str(e)}")
+        print(f"{COLORS['RED']}[-] Failed to create {remediation_file}: {str(e)}{COLORS['RESET']}")
         return False
 
 
@@ -441,16 +450,16 @@ def check_udf():
     
     # Check if module is loaded
     if _is_module_loaded(module_name):
-        print(f"[-] FAIL: {module_name} module is currently loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module is currently loaded{COLORS['RESET']}")
         remediation = f"rmmod {module_name}"
         print(f"    Remediation: {remediation}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is not loaded")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is not loaded{COLORS['RESET']}")
     
     # Check if module is disabled
     if not _is_module_disabled(module_name) and _is_module_available(module_name):
-        print(f"[-] FAIL: {module_name} module can be loaded")
+        print(f"{COLORS['RED']}[-] FAIL: {module_name} module can be loaded{COLORS['RESET']}")
         remediation_file = f"/etc/modprobe.d/{module_name}.conf"
         remediation_content = _create_remediation_file(module_name)
         remediation = f"echo '{remediation_content}' > {remediation_file}"
@@ -458,7 +467,7 @@ def check_udf():
         print(f"    {remediation_content}")
         return False, remediation
     else:
-        print(f"[+] PASS: {module_name} module is disabled or not available")
+        print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is disabled or not available{COLORS['RESET']}")
     
     return True, ""
 
@@ -474,9 +483,9 @@ def remediate_udf():
     if _is_module_loaded(module_name):
         stdout, stderr, rc = _run_command(f"rmmod {module_name}")
         if rc == 0:
-            print(f"[+] Successfully unloaded {module_name} module")
+            print(f"{COLORS['GREEN']}[+] Successfully unloaded {module_name} module{COLORS['RESET']}")
         else:
-            print(f"[-] Failed to unload {module_name} module: {stderr}")
+            print(f"{COLORS['RED']}[-] Failed to unload {module_name} module: {stderr}{COLORS['RESET']}")
             return False
     
     # Create or update the configuration file to disable the module
@@ -486,10 +495,10 @@ def remediate_udf():
     try:
         with open(remediation_file, 'w') as f:
             f.write(remediation_content)
-        print(f"[+] Successfully created {remediation_file} to disable {module_name}")
+        print(f"{COLORS['GREEN']}[+] Successfully created {remediation_file} to disable {module_name}{COLORS['RESET']}")
         return True
     except Exception as e:
-        print(f"[-] Failed to create {remediation_file}: {str(e)}")
+        print(f"{COLORS['RED']}[-] Failed to create {remediation_file}: {str(e)}{COLORS['RESET']}")
         return False
 
 
@@ -507,17 +516,17 @@ def check_fat():
         
         # Check if module is loaded
         if _is_module_loaded(module_name):
-            print(f"[-] FAIL: {module_name} module is currently loaded")
+            print(f"{COLORS['RED']}[-] FAIL: {module_name} module is currently loaded{COLORS['RESET']}")
             remediation = f"rmmod {module_name}"
             print(f"    Remediation: {remediation}")
             remediation_commands.append(remediation)
             all_pass = False
         else:
-            print(f"[+] PASS: {module_name} module is not loaded")
+            print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is not loaded{COLORS['RESET']}")
         
         # Check if module is disabled
         if not _is_module_disabled(module_name) and _is_module_available(module_name):
-            print(f"[-] FAIL: {module_name} module can be loaded")
+            print(f"{COLORS['RED']}[-] FAIL: {module_name} module can be loaded{COLORS['RESET']}")
             remediation_file = f"/etc/modprobe.d/{module_name}.conf"
             remediation_content = _create_remediation_file(module_name)
             remediation = f"echo '{remediation_content}' > {remediation_file}"
@@ -526,7 +535,7 @@ def check_fat():
             remediation_commands.append(remediation)
             all_pass = False
         else:
-            print(f"[+] PASS: {module_name} module is disabled or not available")
+            print(f"{COLORS['GREEN']}[+] PASS: {module_name} module is disabled or not available{COLORS['RESET']}")
     
     return all_pass, "\n".join(remediation_commands)
 
@@ -546,9 +555,9 @@ def remediate_fat():
         if _is_module_loaded(module_name):
             stdout, stderr, rc = _run_command(f"rmmod {module_name}")
             if rc == 0:
-                print(f"[+] Successfully unloaded {module_name} module")
+                print(f"{COLORS['GREEN']}[+] Successfully unloaded {module_name} module{COLORS['RESET']}")
             else:
-                print(f"[-] Failed to unload {module_name} module: {stderr}")
+                print(f"{COLORS['RED']}[-] Failed to unload {module_name} module: {stderr}{COLORS['RESET']}")
                 all_pass = False
         
         # Create or update the configuration file to disable the module
@@ -558,9 +567,9 @@ def remediate_fat():
         try:
             with open(remediation_file, 'w') as f:
                 f.write(remediation_content)
-            print(f"[+] Successfully created {remediation_file} to disable {module_name}")
+            print(f"{COLORS['GREEN']}[+] Successfully created {remediation_file} to disable {module_name}{COLORS['RESET']}")
         except Exception as e:
-            print(f"[-] Failed to create {remediation_file}: {str(e)}")
+            print(f"{COLORS['RED']}[-] Failed to create {remediation_file}: {str(e)}{COLORS['RESET']}")
             all_pass = False
     
     return all_pass
@@ -577,7 +586,7 @@ def run_all_audits(return_results=False):
         bool: True if all checks passed, False otherwise
         list: (Optional) List of (section, description, passed) tuples if return_results is True
     """
-    print("\n===== CIS Ubuntu 22.04 LTS Benchmark - Section 1.1.1 Filesystem Kernel Modules Audit =====")
+    print(f"\n{COLORS['BLUE']}===== CIS Ubuntu 22.04 LTS Benchmark - Section 1.1.1 Filesystem Kernel Modules Audit ====={COLORS['RESET']}")
     
     audit_functions = [
         ("1.1.1.1", "Ensure cramfs kernel module is not available", check_cramfs),
@@ -592,25 +601,25 @@ def run_all_audits(return_results=False):
     
     results = []
     for section, description, check_func in audit_functions:
-        print(f"\n==== {section} {description} ====")
+        print(f"\n{COLORS['BLUE']}==== {section} {description} ===={COLORS['RESET']}")
         passed, remediation = check_func()
         results.append((section, description, passed))
     
     # Print summary
-    print("\n\n===== SUMMARY =====")
+    print(f"\n\n{COLORS['BLUE']}===== SUMMARY ====={COLORS['RESET']}")
     passed_count = sum(1 for _, _, passed in results if passed)
     total_count = len(results)
     
     print(f"\nPassed: {passed_count}/{total_count} checks")
     
     if passed_count == total_count:
-        print("\n[+] All checks passed!")
+        print(f"\n{COLORS['GREEN']}[+] All checks passed!{COLORS['RESET']}")
     else:
-        print("\n[-] Failed checks:")
+        print(f"\n{COLORS['RED']}[-] Failed checks:{COLORS['RESET']}")
         for section, description, passed in results:
             if not passed:
                 print(f"    - {section} {description}")
-        print("\nRun with remediation functions to fix the issues.")
+        print(f"\n{COLORS['YELLOW']}Run with remediation functions to fix the issues.{COLORS['RESET']}")
     
     if return_results:
         return results
@@ -621,7 +630,7 @@ def run_all_remediations():
     """
     Run all filesystem kernel module remediations
     """
-    print("\n===== CIS Ubuntu 22.04 LTS Benchmark - Section 1.1.1 Filesystem Kernel Modules Remediation =====")
+    print(f"\n{COLORS['BLUE']}===== CIS Ubuntu 22.04 LTS Benchmark - Section 1.1.1 Filesystem Kernel Modules Remediation ====={COLORS['RESET']}")
     remediation_functions = [
         ("1.1.1.1", "Ensure cramfs kernel module is not available", remediate_cramfs),
         ("1.1.1.2", "Ensure freevxfs kernel module is not available", remediate_freevxfs),
@@ -634,11 +643,11 @@ def run_all_remediations():
     ]
     
     for section, description, remediate_func in remediation_functions:
-        print(f"\n==== {section} {description} ====")
+        print(f"\n{COLORS['BLUE']}==== {section} {description} ===={COLORS['RESET']}")
         remediate_func()
     
     # Run audit again to verify remediation
-    print("\n\n===== Verifying Remediation =====")
+    print(f"\n\n{COLORS['BLUE']}===== Verifying Remediation ====={COLORS['RESET']}")
     return run_all_audits()
 
 

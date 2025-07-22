@@ -371,7 +371,7 @@ def run_all_remediations():
     print("    2. Remount /dev/shm: mount -o remount /dev/shm\n")
     
     print(f"{COLORS['YELLOW']}After making these changes, run the audit again to verify:{COLORS['RESET']}")
-    print("    python3 cis_audit.py audit filesystem --user-friendly")
+    print("    python3 cis_audit.py audit filesystem")
     
     return False  # Always return False as these remediations require manual intervention
 

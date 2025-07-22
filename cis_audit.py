@@ -11,7 +11,7 @@ Usage:
     python3 cis_audit.py remediate [module_name] # Run remediations for specific module or all
     
     Optional flags:
-    --user-friendly  # Display results in a more user-friendly format
+    --technical  # Display results in technical format instead of user-friendly format (which is now the default)
 """
 
 # ANSI color codes
@@ -190,9 +190,9 @@ def filter_modules(target_module):
     return filtered_modules
 
 
-def run_audits(target_module="all", user_friendly=False):
+def run_audits(target_module="all", user_friendly=True):
     """
-    Run audit functions from selected modules
+    Run audit functions from selected modules with user-friendly output by default
     """
     print(f"\n🔍 Starting CIS Ubuntu 22.04 LTS Benchmark Audit for {target_module}...\n")
     
@@ -281,7 +281,7 @@ def run_audits(target_module="all", user_friendly=False):
                         print(f"\n{COLORS['YELLOW']}⚠️ Overall Result: VULNERABLE{COLORS['RESET']}")
                         print(f"{COLORS['RED']}Some checks failed. Your system may be at risk.{COLORS['RESET']}")
                         print("Recommendation: Run the remediation to address these issues.")
-                        print(f"Command: python3 cis_audit.py remediate {target_module} --user-friendly")
+                        print(f"Command: python3 cis_audit.py remediate {target_module}")
                 else:
                     # Standard technical output
                     print_section_header(submodule["title"], submodule["description"])
@@ -299,9 +299,9 @@ def run_audits(target_module="all", user_friendly=False):
     return all_passed
 
 
-def run_remediations(target_module="all", user_friendly=False):
+def run_remediations(target_module="all", user_friendly=True):
     """
-    Run remediation functions from selected modules
+    Run remediation functions from selected modules with user-friendly output by default
     """
     print(f"\n🔧 Starting CIS Ubuntu 22.04 LTS Benchmark Remediation for {target_module}...\n")
     
@@ -351,7 +351,7 @@ def run_remediations(target_module="all", user_friendly=False):
                         print(f"{COLORS['YELLOW']}No automatic remediation is performed for these checks.{COLORS['RESET']}")
                         
                     print("\nTo verify that all issues have been fixed, run:")
-                    print(f"python3 cis_audit.py audit {target_module} --user-friendly")
+                    print(f"python3 cis_audit.py audit {target_module}")
                 else:
                     # Standard technical output
                     print_section_header(submodule["title"], submodule["description"])
@@ -370,14 +370,17 @@ def main():
     parser = argparse.ArgumentParser(description="CIS Ubuntu 22.04 LTS Benchmark Audit and Remediation Tool")
     parser.add_argument("action", choices=["audit", "remediate"], help="Action to perform")
     parser.add_argument("module", nargs="?", default="all", help="Module to audit/remediate (default: all)")
-    parser.add_argument("--user-friendly", action="store_true", help="Display results in a user-friendly format")
+    parser.add_argument("--technical", action="store_true", help="Display results in technical format instead of user-friendly format")
     
     args = parser.parse_args()
     
+    # Default to user-friendly output unless --technical flag is specified
+    user_friendly = not args.technical
+    
     if args.action == "audit":
-        run_audits(args.module, args.user_friendly)
+        run_audits(args.module, user_friendly)
     elif args.action == "remediate":
-        run_remediations(args.module, args.user_friendly)
+        run_remediations(args.module, user_friendly)
 
 
 if __name__ == "__main__":

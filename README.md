@@ -4,7 +4,7 @@ This repository contains tools for auditing and remediating Ubuntu Linux systems
 
 ## Main Controller Script
 
-The `cis_audit.py` script acts as the main controller for running all CIS Benchmark audit and remediation modules. It provides a unified interface to run all checks or remediations at once, with options for module selection and user-friendly output.
+The `cis_audit.py` script acts as the main controller for running all CIS Benchmark audit and remediation modules. It provides a unified interface to run all checks or remediations at once, with options for module selection and output format.
 
 ### Usage
 
@@ -23,11 +23,11 @@ sudo python3 cis_audit.py audit kernel  # Run all kernel module checks
 sudo python3 cis_audit.py audit fs_modules  # Run only filesystem module checks
 ```
 
-To run audit checks with user-friendly output:
+The tool now uses user-friendly output by default. To run audit checks with technical output instead:
 
 ```bash
-sudo python3 cis_audit.py audit --user-friendly
-sudo python3 cis_audit.py audit kernel --user-friendly
+sudo python3 cis_audit.py audit --technical
+sudo python3 cis_audit.py audit kernel --technical
 ```
 
 #### Remediation Mode
@@ -45,18 +45,18 @@ sudo python3 cis_audit.py remediate kernel
 sudo python3 cis_audit.py remediate fs_modules
 ```
 
-To remediate with user-friendly output:
+The tool now uses user-friendly output by default. To remediate with technical output instead:
 
 ```bash
-sudo python3 cis_audit.py remediate --user-friendly
-sudo python3 cis_audit.py remediate kernel --user-friendly
+sudo python3 cis_audit.py remediate --technical
+sudo python3 cis_audit.py remediate kernel --technical
 ```
 
 ### Features
 
 - Centralized controller for all benchmark modules
 - Module-specific execution for targeted audits and remediations
-- User-friendly output option with clear explanations
+- User-friendly output by default with clear explanations (technical output available with --technical flag)
 - Consistent interface for running audits and remediations
 - Clear section headers and summary output
 - Extensible design for adding future modules

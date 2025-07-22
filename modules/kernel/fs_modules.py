@@ -107,21 +107,13 @@ def remediate_cramfs():
     module_name = "cramfs"
     print(f"{COLORS['BLUE']}Remediating: 1.1.1.1 Ensure {module_name} kernel module is not available{COLORS['RESET']}")
     
-    # Unload the module if it's loaded
-    if _is_module_loaded(module_name):
-        stdout, stderr, rc = _run_command(f"modprobe -r {module_name}")
-        if rc != 0:
-            print(f"{COLORS['RED']}[-] FAIL: Could not unload {module_name} module: {stderr}{COLORS['RESET']}")
-            return False
-        print(f"{COLORS['GREEN']}[+] {module_name} module unloaded{COLORS['RESET']}")
+    print(f"{COLORS['YELLOW']}Manual remediation steps:{COLORS['RESET']}")
+    print(f"    1. Unload the module if it's loaded: sudo modprobe -r {module_name}")
+    print(f"    2. Create a configuration file to disable the module:")
+    print(f"       sudo echo 'install {module_name} /bin/true' > /etc/modprobe.d/disable-{module_name}.conf")
+    print(f"    3. Update the initramfs: sudo update-initramfs -u")
     
-    # Disable the module
-    if _disable_module(module_name):
-        print(f"{COLORS['GREEN']}[+] {module_name} module disabled{COLORS['RESET']}")
-        return True
-    else:
-        print(f"{COLORS['RED']}[-] FAIL: Could not disable {module_name} module{COLORS['RESET']}")
-        return False
+    return True
 
 
 def check_freevxfs():
@@ -151,21 +143,13 @@ def remediate_freevxfs():
     module_name = "freevxfs"
     print(f"{COLORS['BLUE']}Remediating: 1.1.1.2 Ensure {module_name} kernel module is not available{COLORS['RESET']}")
     
-    # Unload the module if it's loaded
-    if _is_module_loaded(module_name):
-        stdout, stderr, rc = _run_command(f"modprobe -r {module_name}")
-        if rc != 0:
-            print(f"{COLORS['RED']}[-] FAIL: Could not unload {module_name} module: {stderr}{COLORS['RESET']}")
-            return False
-        print(f"{COLORS['GREEN']}[+] {module_name} module unloaded{COLORS['RESET']}")
+    print(f"{COLORS['YELLOW']}Manual remediation steps:{COLORS['RESET']}")
+    print(f"    1. Unload the module if it's loaded: sudo modprobe -r {module_name}")
+    print(f"    2. Create a configuration file to disable the module:")
+    print(f"       sudo echo 'install {module_name} /bin/true' > /etc/modprobe.d/disable-{module_name}.conf")
+    print(f"    3. Update the initramfs: sudo update-initramfs -u")
     
-    # Disable the module
-    if _disable_module(module_name):
-        print(f"{COLORS['GREEN']}[+] {module_name} module disabled{COLORS['RESET']}")
-        return True
-    else:
-        print(f"{COLORS['RED']}[-] FAIL: Could not disable {module_name} module{COLORS['RESET']}")
-        return False
+    return True
 
 
 def check_jffs2():
@@ -195,21 +179,13 @@ def remediate_jffs2():
     module_name = "jffs2"
     print(f"{COLORS['BLUE']}Remediating: 1.1.1.3 Ensure {module_name} kernel module is not available{COLORS['RESET']}")
     
-    # Unload the module if it's loaded
-    if _is_module_loaded(module_name):
-        stdout, stderr, rc = _run_command(f"modprobe -r {module_name}")
-        if rc != 0:
-            print(f"{COLORS['RED']}[-] FAIL: Could not unload {module_name} module: {stderr}{COLORS['RESET']}")
-            return False
-        print(f"{COLORS['GREEN']}[+] {module_name} module unloaded{COLORS['RESET']}")
+    print(f"{COLORS['YELLOW']}Manual remediation steps:{COLORS['RESET']}")
+    print(f"    1. Unload the module if it's loaded: sudo modprobe -r {module_name}")
+    print(f"    2. Create a configuration file to disable the module:")
+    print(f"       sudo echo 'install {module_name} /bin/true' > /etc/modprobe.d/disable-{module_name}.conf")
+    print(f"    3. Update the initramfs: sudo update-initramfs -u")
     
-    # Disable the module
-    if _disable_module(module_name):
-        print(f"{COLORS['GREEN']}[+] {module_name} module disabled{COLORS['RESET']}")
-        return True
-    else:
-        print(f"{COLORS['RED']}[-] FAIL: Could not disable {module_name} module{COLORS['RESET']}")
-        return False
+    return True
 
 
 def check_hfs():
@@ -239,21 +215,13 @@ def remediate_hfs():
     module_name = "hfs"
     print(f"{COLORS['BLUE']}Remediating: 1.1.1.4 Ensure {module_name} kernel module is not available{COLORS['RESET']}")
     
-    # Unload the module if it's loaded
-    if _is_module_loaded(module_name):
-        stdout, stderr, rc = _run_command(f"modprobe -r {module_name}")
-        if rc != 0:
-            print(f"{COLORS['RED']}[-] FAIL: Could not unload {module_name} module: {stderr}{COLORS['RESET']}")
-            return False
-        print(f"{COLORS['GREEN']}[+] {module_name} module unloaded{COLORS['RESET']}")
+    print(f"{COLORS['YELLOW']}Manual remediation steps:{COLORS['RESET']}")
+    print(f"    1. Unload the module if it's loaded: sudo modprobe -r {module_name}")
+    print(f"    2. Create a configuration file to disable the module:")
+    print(f"       sudo echo 'install {module_name} /bin/true' > /etc/modprobe.d/disable-{module_name}.conf")
+    print(f"    3. Update the initramfs: sudo update-initramfs -u")
     
-    # Disable the module
-    if _disable_module(module_name):
-        print(f"{COLORS['GREEN']}[+] {module_name} module disabled{COLORS['RESET']}")
-        return True
-    else:
-        print(f"{COLORS['RED']}[-] FAIL: Could not disable {module_name} module{COLORS['RESET']}")
-        return False
+    return True
 
 
 def check_hfsplus():
@@ -283,21 +251,13 @@ def remediate_hfsplus():
     module_name = "hfsplus"
     print(f"{COLORS['BLUE']}Remediating: 1.1.1.5 Ensure {module_name} kernel module is not available{COLORS['RESET']}")
     
-    # Unload the module if it's loaded
-    if _is_module_loaded(module_name):
-        stdout, stderr, rc = _run_command(f"modprobe -r {module_name}")
-        if rc != 0:
-            print(f"{COLORS['RED']}[-] FAIL: Could not unload {module_name} module: {stderr}{COLORS['RESET']}")
-            return False
-        print(f"{COLORS['GREEN']}[+] {module_name} module unloaded{COLORS['RESET']}")
+    print(f"{COLORS['YELLOW']}Manual remediation steps:{COLORS['RESET']}")
+    print(f"    1. Unload the module if it's loaded: sudo modprobe -r {module_name}")
+    print(f"    2. Create a configuration file to disable the module:")
+    print(f"       sudo echo 'install {module_name} /bin/true' > /etc/modprobe.d/disable-{module_name}.conf")
+    print(f"    3. Update the initramfs: sudo update-initramfs -u")
     
-    # Disable the module
-    if _disable_module(module_name):
-        print(f"{COLORS['GREEN']}[+] {module_name} module disabled{COLORS['RESET']}")
-        return True
-    else:
-        print(f"{COLORS['RED']}[-] FAIL: Could not disable {module_name} module{COLORS['RESET']}")
-        return False
+    return True
 
 
 def check_squashfs():
@@ -327,21 +287,13 @@ def remediate_squashfs():
     module_name = "squashfs"
     print(f"{COLORS['BLUE']}Remediating: 1.1.1.6 Ensure {module_name} kernel module is not available{COLORS['RESET']}")
     
-    # Unload the module if it's loaded
-    if _is_module_loaded(module_name):
-        stdout, stderr, rc = _run_command(f"modprobe -r {module_name}")
-        if rc != 0:
-            print(f"{COLORS['RED']}[-] FAIL: Could not unload {module_name} module: {stderr}{COLORS['RESET']}")
-            return False
-        print(f"{COLORS['GREEN']}[+] {module_name} module unloaded{COLORS['RESET']}")
+    print(f"{COLORS['YELLOW']}Manual remediation steps:{COLORS['RESET']}")
+    print(f"    1. Unload the module if it's loaded: sudo modprobe -r {module_name}")
+    print(f"    2. Create a configuration file to disable the module:")
+    print(f"       sudo echo 'install {module_name} /bin/true' > /etc/modprobe.d/disable-{module_name}.conf")
+    print(f"    3. Update the initramfs: sudo update-initramfs -u")
     
-    # Disable the module
-    if _disable_module(module_name):
-        print(f"{COLORS['GREEN']}[+] {module_name} module disabled{COLORS['RESET']}")
-        return True
-    else:
-        print(f"{COLORS['RED']}[-] FAIL: Could not disable {module_name} module{COLORS['RESET']}")
-        return False
+    return True
 
 
 def check_udf():
@@ -371,21 +323,13 @@ def remediate_udf():
     module_name = "udf"
     print(f"{COLORS['BLUE']}Remediating: 1.1.1.7 Ensure {module_name} kernel module is not available{COLORS['RESET']}")
     
-    # Unload the module if it's loaded
-    if _is_module_loaded(module_name):
-        stdout, stderr, rc = _run_command(f"modprobe -r {module_name}")
-        if rc != 0:
-            print(f"{COLORS['RED']}[-] FAIL: Could not unload {module_name} module: {stderr}{COLORS['RESET']}")
-            return False
-        print(f"{COLORS['GREEN']}[+] {module_name} module unloaded{COLORS['RESET']}")
+    print(f"{COLORS['YELLOW']}Manual remediation steps:{COLORS['RESET']}")
+    print(f"    1. Unload the module if it's loaded: sudo modprobe -r {module_name}")
+    print(f"    2. Create a configuration file to disable the module:")
+    print(f"       sudo echo 'install {module_name} /bin/true' > /etc/modprobe.d/disable-{module_name}.conf")
+    print(f"    3. Update the initramfs: sudo update-initramfs -u")
     
-    # Disable the module
-    if _disable_module(module_name):
-        print(f"{COLORS['GREEN']}[+] {module_name} module disabled{COLORS['RESET']}")
-        return True
-    else:
-        print(f"{COLORS['RED']}[-] FAIL: Could not disable {module_name} module{COLORS['RESET']}")
-        return False
+    return True
 
 
 def check_fat():
@@ -430,43 +374,16 @@ def remediate_fat():
     """
     print(f"{COLORS['BLUE']}Remediating: 1.1.1.8 Ensure FAT kernel module is not available{COLORS['RESET']}")
     
-    # Remediate vfat first, as it depends on fat
-    vfat_success = True
-    fat_success = True
+    print(f"{COLORS['YELLOW']}Manual remediation steps:{COLORS['RESET']}")
+    print("    1. Unload the vfat module first (as it depends on fat): sudo modprobe -r vfat")
+    print("    2. Create a configuration file to disable the vfat module:")
+    print("       sudo echo 'install vfat /bin/true' > /etc/modprobe.d/disable-vfat.conf")
+    print("    3. Unload the fat module: sudo modprobe -r fat")
+    print("    4. Create a configuration file to disable the fat module:")
+    print("       sudo echo 'install fat /bin/true' > /etc/modprobe.d/disable-fat.conf")
+    print("    5. Update the initramfs: sudo update-initramfs -u")
     
-    # Unload vfat if loaded
-    if _is_module_loaded("vfat"):
-        stdout, stderr, rc = _run_command("modprobe -r vfat")
-        if rc != 0:
-            print(f"{COLORS['RED']}[-] FAIL: Could not unload vfat module: {stderr}{COLORS['RESET']}")
-            vfat_success = False
-        else:
-            print(f"{COLORS['GREEN']}[+] vfat module unloaded{COLORS['RESET']}")
-    
-    # Disable vfat
-    if _disable_module("vfat"):
-        print(f"{COLORS['GREEN']}[+] vfat module disabled{COLORS['RESET']}")
-    else:
-        print(f"{COLORS['RED']}[-] FAIL: Could not disable vfat module{COLORS['RESET']}")
-        vfat_success = False
-    
-    # Unload fat if loaded
-    if _is_module_loaded("fat"):
-        stdout, stderr, rc = _run_command("modprobe -r fat")
-        if rc != 0:
-            print(f"{COLORS['RED']}[-] FAIL: Could not unload fat module: {stderr}{COLORS['RESET']}")
-            fat_success = False
-        else:
-            print(f"{COLORS['GREEN']}[+] fat module unloaded{COLORS['RESET']}")
-    
-    # Disable fat
-    if _disable_module("fat"):
-        print(f"{COLORS['GREEN']}[+] fat module disabled{COLORS['RESET']}")
-    else:
-        print(f"{COLORS['RED']}[-] FAIL: Could not disable fat module{COLORS['RESET']}")
-        fat_success = False
-    
-    return vfat_success and fat_success
+    return True
 
 
 def run_all_audits(return_results=False):

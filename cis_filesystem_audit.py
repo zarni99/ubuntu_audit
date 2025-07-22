@@ -444,7 +444,7 @@ def main():
     results = []
     
     if not args.json:
-        print("Ubuntu 22.04 LTS CIS Section 1.1 - Filesystem Configuration Audit Report\n" + "-"*75)
+        print("Ubuntu 22.04 LTS CIS Section 1.1 - Filesystem Configuration Audit Report\n" + "-"*60)
     
     for name, func in checks:
         passed, msg = func()

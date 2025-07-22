@@ -2,28 +2,9 @@
 
 This repository contains tools for auditing and remediating Ubuntu Linux systems according to the CIS (Center for Internet Security) Ubuntu 22.04 LTS Benchmark.
 
-## User-Friendly Report Script
-
-The `user_friendly_report.py` script provides a more accessible way to run audits and view results, designed for non-technical users.
-
-### Usage
-
-```bash
-sudo python3 user_friendly_report.py audit     # Run audit with user-friendly output
-sudo python3 user_friendly_report.py remediate  # Run remediation with user-friendly output
-```
-
-### Features
-
-- Clear, non-technical explanations of each security check
-- Plain language descriptions of what each module does and why it's important
-- User-friendly status indicators (✅ SECURE, ❌ VULNERABLE)
-- Simplified remediation instructions
-- Designed for users without technical security knowledge
-
 ## Main Controller Script
 
-The `cis_audit.py` script acts as the main controller for running all CIS Benchmark audit and remediation modules. It provides a unified interface to run all checks or remediations at once.
+The `cis_audit.py` script acts as the main controller for running all CIS Benchmark audit and remediation modules. It provides a unified interface to run all checks or remediations at once, with options for module selection and user-friendly output.
 
 ### Usage
 
@@ -35,6 +16,20 @@ To run all audit checks without making any changes to the system:
 sudo python3 cis_audit.py audit
 ```
 
+To run audit checks for a specific module:
+
+```bash
+sudo python3 cis_audit.py audit kernel  # Run all kernel module checks
+sudo python3 cis_audit.py audit fs_modules  # Run only filesystem module checks
+```
+
+To run audit checks with user-friendly output:
+
+```bash
+sudo python3 cis_audit.py audit --user-friendly
+sudo python3 cis_audit.py audit kernel --user-friendly
+```
+
 #### Remediation Mode
 
 To remediate all issues found during the audit:
@@ -43,16 +38,46 @@ To remediate all issues found during the audit:
 sudo python3 cis_audit.py remediate
 ```
 
+To remediate issues for a specific module:
+
+```bash
+sudo python3 cis_audit.py remediate kernel
+sudo python3 cis_audit.py remediate fs_modules
+```
+
+To remediate with user-friendly output:
+
+```bash
+sudo python3 cis_audit.py remediate --user-friendly
+sudo python3 cis_audit.py remediate kernel --user-friendly
+```
+
 ### Features
 
 - Centralized controller for all benchmark modules
+- Module-specific execution for targeted audits and remediations
+- User-friendly output option with clear explanations
 - Consistent interface for running audits and remediations
 - Clear section headers and summary output
 - Extensible design for adding future modules
 
+## Project Structure
+
+```
+/
+├── cis_audit.py           # Main controller script
+├── modules/               # Directory containing all audit modules
+│   ├── __init__.py        # Package initialization
+│   ├── kernel/            # Kernel-related audit modules
+│   │   ├── __init__.py    # Kernel module package initialization
+│   │   └── fs_modules.py  # Filesystem kernel modules audit
+│   └── ... (future modules)
+└── README.md              # This documentation
+```
+
 ## Filesystem Kernel Modules Audit
 
-The `fs_kernel_modules.py` script audits and optionally remediates the filesystem kernel modules according to CIS Ubuntu 22.04 LTS Benchmark section 1.1.1.
+The `modules/kernel/fs_modules.py` module audits and optionally remediates the filesystem kernel modules according to CIS Ubuntu 22.04 LTS Benchmark section 1.1.1.
 
 ### Covered Benchmarks
 
@@ -65,28 +90,10 @@ The `fs_kernel_modules.py` script audits and optionally remediates the filesyste
 - 1.1.1.7 Ensure udf kernel module is not available
 - 1.1.1.8 Ensure FAT kernel module is not available
 
-### Usage
-
-#### Audit Mode
-
-To run the audit without making any changes to the system:
-
-```bash
-sudo python3 fs_kernel_modules.py audit
-```
-
-#### Remediation Mode
-
-To remediate any issues found during the audit:
-
-```bash
-sudo python3 fs_kernel_modules.py remediate
-```
-
 ### Features
 
 - Modular design with individual check functions for each benchmark item
-- Clear pass/fail status for each check
+- Clear pass/fail status for each check with color coding
 - Detailed remediation suggestions
 - Option to automatically apply remediation
 - Summary report of all checks
@@ -99,19 +106,26 @@ sudo python3 fs_kernel_modules.py remediate
 
 ## Adding More Benchmarks
 
-This repository is designed to be extended with additional benchmark checks. Each benchmark section should be implemented as a separate Python module with a similar structure to `fs_kernel_modules.py`.
+This repository is designed to be extended with additional benchmark checks. Each benchmark section should be implemented as a separate Python module within the appropriate directory under `modules/`.
 
 ### Module Requirements
 
 Each module should implement at least these two functions:
 
 ```python
-def run_all_audits():
+def run_all_audits(return_results=False):
     """
     Run all audit checks for this module
+    
+    Args:
+        return_results: If True, return a list of results instead of just True/False
+    
+    Returns:
+        If return_results is True, returns a list of tuples (benchmark_id, description, result)
+        Otherwise, returns True if all checks pass, False otherwise
     """
     # Implementation here
-    return True  # Return True if all checks pass, False otherwise
+    return True  # or return results list if return_results=True
 
 def run_all_remediations():
     """
@@ -127,23 +141,58 @@ To add a new module to the main controller, update the `MODULES` list in `cis_au
 
 ```python
 # Import your new module
-import fs_kernel_modules
-import your_new_module  # Add this line
+from modules.kernel import fs_modules
+from modules.your_category import your_new_module  # Add this line
 
 # Add your module to the MODULES list
 MODULES = [
     {
-        "name": "fs_kernel_modules",
-        "module": fs_kernel_modules,
-        "title": "1.1.1 Filesystem Kernel Modules",
-        "description": "Ensure unnecessary filesystem modules are disabled"
+        "name": "kernel",
+        "submodules": [
+            {
+                "name": "fs_modules",
+                "module": fs_modules,
+                "title": "1.1.1 Filesystem Kernel Modules",
+                "description": "Ensure unnecessary filesystem modules are disabled"
+            }
+        ]
     },
     {
-        "name": "your_new_module",
-        "module": your_new_module,
-        "title": "X.Y.Z Your Module Title",
-        "description": "Description of what your module checks"
+        "name": "your_category",
+        "submodules": [
+            {
+                "name": "your_module_name",
+                "module": your_new_module,
+                "title": "X.Y.Z Your Module Title",
+                "description": "Description of what your module checks"
+            }
+        ]
     },
     # Additional modules...
 ]
+```
+
+### User-Friendly Explanations
+
+To add user-friendly explanations for your new module, update the `USER_FRIENDLY_EXPLANATIONS` dictionary in `cis_audit.py`:
+
+```python
+USER_FRIENDLY_EXPLANATIONS = {
+    "1.1.1": {
+        # Existing explanations...
+    },
+    "X.Y.Z": {  # Your module's section ID
+        "title": "Your Module Title",
+        "overview": "Brief explanation of what these checks do.",
+        "importance": "Why these checks are important for security.",
+        "pass_meaning": "What it means when a check passes.",
+        "fail_meaning": "What it means when a check fails.",
+        "remediation_explanation": "What the remediation will do.",
+        "modules": {
+            "item1": "Explanation of item1",
+            "item2": "Explanation of item2",
+            # Add more items as needed
+        }
+    }
+}
 ```

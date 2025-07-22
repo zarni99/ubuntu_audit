@@ -31,6 +31,11 @@ import io
 # Import modules from the new structure
 from modules.kernel import fs_modules
 from modules.filesystem import partitions
+from modules.package_management import repositories, updates
+from modules.access_control import apparmor
+from modules.bootloader import configuration
+from modules.process_hardening import process_restrictions
+from modules.command_line_warning import warning_banners
 
 # Dictionary of user-friendly explanations for each benchmark
 USER_FRIENDLY_EXPLANATIONS = {
@@ -69,6 +74,82 @@ USER_FRIENDLY_EXPLANATIONS = {
             "/dev/shm nosuid": "Prevents setuid programs in shared memory from changing the effective user ID.",
             "/dev/shm noexec": "Prevents execution of binaries in shared memory, reducing the risk of memory-based attacks."
         }
+    },
+    "1.2.1": {
+        "title": "Package Repositories",
+        "overview": "These checks ensure that package repositories are properly configured and secured.",
+        "importance": "Properly configured package repositories ensure that software is obtained from trusted sources and that package integrity is verified.",
+        "pass_meaning": "The package repositories are properly configured and secured.",
+        "fail_meaning": "The package repositories are not properly configured or secured, which could lead to compromised software.",
+        "remediation_explanation": "The system will provide instructions for properly configuring package repositories and GPG keys.",
+        "modules": {
+            "GPG keys": "Cryptographic keys used to verify the authenticity of packages.",
+            "package repositories": "Sources from which software packages are downloaded and installed."
+        }
+    },
+    "1.2.2": {
+        "title": "Package Updates",
+        "overview": "These checks ensure that the system is configured to receive security updates.",
+        "importance": "Regular security updates are critical for maintaining system security and addressing known vulnerabilities.",
+        "pass_meaning": "The system is properly configured to receive security updates.",
+        "fail_meaning": "The system is not properly configured to receive security updates, which could leave it vulnerable.",
+        "remediation_explanation": "The system will provide instructions for configuring automatic security updates.",
+        "modules": {
+            "updates": "Configuration for receiving and applying security updates."
+        }
+    },
+    "1.3.1": {
+        "title": "AppArmor Configuration",
+        "overview": "These checks ensure that AppArmor is properly installed, enabled, and configured.",
+        "importance": "AppArmor provides Mandatory Access Control (MAC) which restricts programs to a limited set of resources, reducing the potential damage from compromised software.",
+        "pass_meaning": "AppArmor is properly installed, enabled, and configured.",
+        "fail_meaning": "AppArmor is not properly installed, enabled, or configured, which could leave the system vulnerable.",
+        "remediation_explanation": "The system will provide instructions for installing, enabling, and configuring AppArmor.",
+        "modules": {
+            "AppArmor": "A Linux Security Module that provides Mandatory Access Control.",
+            "AppArmor profiles": "Configuration files that define the resources a program can access."
+        }
+    },
+    "1.4": {
+        "title": "Bootloader Configuration",
+        "overview": "These checks ensure that the bootloader is properly secured.",
+        "importance": "A properly secured bootloader prevents unauthorized users from modifying boot parameters or booting into single user mode.",
+        "pass_meaning": "The bootloader is properly secured.",
+        "fail_meaning": "The bootloader is not properly secured, which could allow unauthorized access.",
+        "remediation_explanation": "The system will provide instructions for securing the bootloader.",
+        "modules": {
+            "bootloader password": "A password that restricts access to the bootloader.",
+            "bootloader permissions": "File permissions that prevent unauthorized modification of bootloader configuration."
+        }
+    },
+    "1.5": {
+        "title": "Process Hardening",
+        "overview": "These checks ensure that additional process hardening measures are in place.",
+        "importance": "Process hardening measures help prevent exploitation of vulnerabilities in running processes.",
+        "pass_meaning": "The process hardening measure is properly configured.",
+        "fail_meaning": "The process hardening measure is not properly configured, which could leave processes vulnerable.",
+        "remediation_explanation": "The system will provide instructions for configuring process hardening measures.",
+        "modules": {
+            "address space layout randomization": "A security technique that randomizes memory addresses to make exploitation more difficult.",
+            "ptrace scope": "Controls which processes can use ptrace to examine the memory and registers of other processes.",
+            "core dumps": "Memory snapshots created when a program crashes, which could contain sensitive information.",
+            "prelink": "A program that modifies ELF binaries to speed up loading, but can interfere with security measures.",
+            "automatic error reporting": "A feature that sends crash reports, which could contain sensitive information."
+        }
+    },
+    "1.6": {
+        "title": "Command Line Warning Banners",
+        "overview": "These checks ensure that appropriate warning banners are displayed to users.",
+        "importance": "Warning banners inform users about authorized use of the system and may have legal implications.",
+        "pass_meaning": "The warning banner is properly configured.",
+        "fail_meaning": "The warning banner is not properly configured, which could have legal implications.",
+        "remediation_explanation": "The system will provide instructions for configuring warning banners.",
+        "modules": {
+            "message of the day": "A message displayed to users when they log in.",
+            "local login warning": "A warning displayed to users logging in locally.",
+            "remote login warning": "A warning displayed to users logging in remotely.",
+            "su command access": "Controls which users can use the su command to become root."
+        }
     }
     # Add more sections as they are implemented
 }
@@ -94,6 +175,67 @@ MODULES = [
                 "module": partitions,
                 "title": "1.1.2 Filesystem Partition Configuration",
                 "description": "Ensure proper filesystem partitioning and mounting"
+            }
+        ]
+    },
+    {
+        "name": "package_management",
+        "submodules": [
+            {
+                "name": "repositories",
+                "module": repositories,
+                "title": "1.2.1 Configure Package Repositories",
+                "description": "Ensure package repositories are properly configured"
+            },
+            {
+                "name": "updates",
+                "module": updates,
+                "title": "1.2.2 Configure Package Updates",
+                "description": "Ensure package updates are properly configured"
+            }
+        ]
+    },
+    {
+        "name": "access_control",
+        "submodules": [
+            {
+                "name": "apparmor",
+                "module": apparmor,
+                "title": "1.3.1 Configure AppArmor",
+                "description": "Ensure AppArmor is properly configured"
+            }
+        ]
+    },
+    {
+        "name": "bootloader",
+        "submodules": [
+            {
+                "name": "configuration",
+                "module": configuration,
+                "title": "1.4 Configure Bootloader",
+                "description": "Ensure bootloader is properly configured"
+            }
+        ]
+    },
+    {
+        "name": "process_hardening",
+        "submodules": [
+            {
+                "name": "process_restrictions",
+                "module": process_restrictions,
+                "title": "1.5 Configure Additional Process Hardening",
+                "description": "Ensure additional process hardening measures are in place"
+            }
+        ]
+    },
+    {
+        "name": "command_line_warning",
+        "submodules": [
+            {
+                "name": "warning_banners",
+                "module": warning_banners,
+                "title": "1.6 Configure Command Line Warning Banners",
+                "description": "Ensure command line warning banners are properly configured"
             }
         ]
     },
@@ -218,6 +360,18 @@ def run_audits(target_module="all", user_friendly=True):
                         section_id = "1.1.1"
                     elif submodule["title"].startswith("1.1.2"):
                         section_id = "1.1.2"
+                    elif submodule["title"].startswith("1.2.1"):
+                        section_id = "1.2.1"
+                    elif submodule["title"].startswith("1.2.2"):
+                        section_id = "1.2.2"
+                    elif submodule["title"].startswith("1.3.1"):
+                        section_id = "1.3.1"
+                    elif submodule["title"].startswith("1.4"):
+                        section_id = "1.4"
+                    elif submodule["title"].startswith("1.5"):
+                        section_id = "1.5"
+                    elif submodule["title"].startswith("1.6"):
+                        section_id = "1.6"
                     else:
                         # Default to standard output if no user-friendly explanation exists
                         print_section_header(submodule["title"], submodule["description"])
@@ -325,6 +479,18 @@ def run_remediations(target_module="all", user_friendly=True):
                         section_id = "1.1.1"
                     elif submodule["title"].startswith("1.1.2"):
                         section_id = "1.1.2"
+                    elif submodule["title"].startswith("1.2.1"):
+                        section_id = "1.2.1"
+                    elif submodule["title"].startswith("1.2.2"):
+                        section_id = "1.2.2"
+                    elif submodule["title"].startswith("1.3.1"):
+                        section_id = "1.3.1"
+                    elif submodule["title"].startswith("1.4"):
+                        section_id = "1.4"
+                    elif submodule["title"].startswith("1.5"):
+                        section_id = "1.5"
+                    elif submodule["title"].startswith("1.6"):
+                        section_id = "1.6"
                     else:
                         # Default to standard output if no user-friendly explanation exists
                         print_section_header(submodule["title"], submodule["description"])

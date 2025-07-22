@@ -1,102 +1,130 @@
-# Ubuntu Linux CIS Benchmark Audit Tools
+# Ubuntu Linux CIS Benchmark Audit Tool
 
-This repository contains Python-based audit tools for Ubuntu 22.04 LTS that implement checks based on the CIS (Center for Internet Security) Benchmarks.
+This repository contains tools for auditing and remediating Ubuntu Linux systems according to the CIS (Center for Internet Security) Ubuntu 22.04 LTS Benchmark.
 
-## Available Audit Tools
+## Main Controller Script
 
-### 1. Filesystem Configuration Audit (CIS Section 1.1)
+The `cis_audit.py` script acts as the main controller for running all CIS Benchmark audit and remediation modules. It provides a unified interface to run all checks or remediations at once.
 
-The `cis_filesystem_audit.py` script checks compliance with CIS Benchmark Section 1.1 - Filesystem Configuration, including:
+### Usage
 
-- 1.1.1 Configure Filesystem Kernel Modules
-- 1.1.2 Configure /tmp
-- 1.1.2.2 Configure /dev/shm
-- 1.1.2.3 Configure /home
-- 1.1.2.4 Configure /var
-- 1.1.2.5 Configure /var/tmp
-- 1.1.2.6 Configure /var/log
-- 1.1.2.7 Configure /var/log/audit
+#### Audit Mode
 
-### 2. Services Audit (CIS Section 2)
-
-The `cis_services_audit.py` script checks compliance with CIS Benchmark Section 2 - Services, including:
-
-- 2.1 Check unnecessary services are not installed
-- 2.2 Check time synchronization is enabled
-
-## Usage
-
-### Running the Filesystem Audit
+To run all audit checks without making any changes to the system:
 
 ```bash
-# Run with terminal output
-sudo python3 cis_filesystem_audit.py
-
-# Run with JSON output
-sudo python3 cis_filesystem_audit.py --json
+sudo python3 cis_audit.py audit
 ```
 
-### Running the Services Audit
+#### Remediation Mode
+
+To remediate all issues found during the audit:
 
 ```bash
-# Run with terminal output
-sudo python3 cis_services_audit.py
-
-# Run with JSON output
-sudo python3 cis_services_audit.py --json
+sudo python3 cis_audit.py remediate
 ```
 
-## Output Format
+### Features
 
-### Terminal Output
+- Centralized controller for all benchmark modules
+- Consistent interface for running audits and remediations
+- Clear section headers and summary output
+- Extensible design for adding future modules
 
-The terminal output provides a human-readable format with PASS/FAIL status for each check, along with a description of why the check passed or failed, and remediation steps for failed checks.
+## Filesystem Kernel Modules Audit
 
-Example:
-```
-Ubuntu 22.04 LTS CIS Section 1.1 - Filesystem Configuration Audit Report
----------------------------------------------------------------------------
-[PASS] 1.1.1.1 Ensure cramfs kernel module is not available: cramfs kernel module is not loaded and is disabled
-[FAIL] 1.1.2.1 Ensure /tmp is a separate partition: /tmp is not on a separate partition. Remediation: Create a separate partition for /tmp during system installation or resize existing partitions.
-```
+The `fs_kernel_modules.py` script audits and optionally remediates the filesystem kernel modules according to CIS Ubuntu 22.04 LTS Benchmark section 1.1.1.
 
-### JSON Output
+### Covered Benchmarks
 
-The JSON output provides a structured format that can be easily parsed and integrated with other tools or dashboards.
+- 1.1.1.1 Ensure cramfs kernel module is not available
+- 1.1.1.2 Ensure freevxfs kernel module is not available
+- 1.1.1.3 Ensure jffs2 kernel module is not available
+- 1.1.1.4 Ensure hfs kernel module is not available
+- 1.1.1.5 Ensure hfsplus kernel module is not available
+- 1.1.1.6 Ensure squashfs kernel module is not available
+- 1.1.1.7 Ensure udf kernel module is not available
+- 1.1.1.8 Ensure FAT kernel module is not available
 
-Example:
-```json
-{
-  "results": [
-    {
-      "check": "1.1.1.1 Ensure cramfs kernel module is not available",
-      "status": "PASS",
-      "message": "cramfs kernel module is not loaded and is disabled",
-      "passed": true
-    },
-    {
-      "check": "1.1.2.1 Ensure /tmp is a separate partition",
-      "status": "FAIL",
-      "message": "/tmp is not on a separate partition. Remediation: Create a separate partition for /tmp during system installation or resize existing partitions.",
-      "passed": false
-    }
-  ]
-}
+### Usage
+
+#### Audit Mode
+
+To run the audit without making any changes to the system:
+
+```bash
+sudo python3 fs_kernel_modules.py audit
 ```
 
-## Requirements
+#### Remediation Mode
+
+To remediate any issues found during the audit:
+
+```bash
+sudo python3 fs_kernel_modules.py remediate
+```
+
+### Features
+
+- Modular design with individual check functions for each benchmark item
+- Clear pass/fail status for each check
+- Detailed remediation suggestions
+- Option to automatically apply remediation
+- Summary report of all checks
+
+### Requirements
 
 - Python 3.6 or higher
-- Root/sudo privileges (required for some checks)
-- Ubuntu 22.04 LTS
+- Root privileges (sudo) for remediation
+- Ubuntu 22.04 LTS (may work on other versions but not tested)
 
-## Extending the Tools
+## Adding More Benchmarks
 
-The audit tools are designed to be modular and easy to extend. To add new checks:
+This repository is designed to be extended with additional benchmark checks. Each benchmark section should be implemented as a separate Python module with a similar structure to `fs_kernel_modules.py`.
 
-1. Create a new function that performs the check and returns a tuple of (passed, message)
-2. Add the check to the `checks` list in the `main()` function
+### Module Requirements
 
-## License
+Each module should implement at least these two functions:
 
-MIT
+```python
+def run_all_audits():
+    """
+    Run all audit checks for this module
+    """
+    # Implementation here
+    return True  # Return True if all checks pass, False otherwise
+
+def run_all_remediations():
+    """
+    Run all remediation functions for this module
+    """
+    # Implementation here
+    return True  # Return True if all remediations succeed, False otherwise
+```
+
+### Adding a Module to the Controller
+
+To add a new module to the main controller, update the `MODULES` list in `cis_audit.py`:
+
+```python
+# Import your new module
+import fs_kernel_modules
+import your_new_module  # Add this line
+
+# Add your module to the MODULES list
+MODULES = [
+    {
+        "name": "fs_kernel_modules",
+        "module": fs_kernel_modules,
+        "title": "1.1.1 Filesystem Kernel Modules",
+        "description": "Ensure unnecessary filesystem modules are disabled"
+    },
+    {
+        "name": "your_new_module",
+        "module": your_new_module,
+        "title": "X.Y.Z Your Module Title",
+        "description": "Description of what your module checks"
+    },
+    # Additional modules...
+]
+```

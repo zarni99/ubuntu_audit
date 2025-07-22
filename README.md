@@ -2,6 +2,25 @@
 
 This repository contains tools for auditing and remediating Ubuntu Linux systems according to the CIS (Center for Internet Security) Ubuntu 22.04 LTS Benchmark.
 
+## User-Friendly Report Script
+
+The `user_friendly_report.py` script provides a more accessible way to run audits and view results, designed for non-technical users.
+
+### Usage
+
+```bash
+sudo python3 user_friendly_report.py audit     # Run audit with user-friendly output
+sudo python3 user_friendly_report.py remediate  # Run remediation with user-friendly output
+```
+
+### Features
+
+- Clear, non-technical explanations of each security check
+- Plain language descriptions of what each module does and why it's important
+- User-friendly status indicators (✅ SECURE, ❌ VULNERABLE)
+- Simplified remediation instructions
+- Designed for users without technical security knowledge
+
 ## Main Controller Script
 
 The `cis_audit.py` script acts as the main controller for running all CIS Benchmark audit and remediation modules. It provides a unified interface to run all checks or remediations at once.

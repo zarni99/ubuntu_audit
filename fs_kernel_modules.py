@@ -566,9 +566,16 @@ def remediate_fat():
     return all_pass
 
 
-def run_all_audits():
+def run_all_audits(return_results=False):
     """
     Run all filesystem kernel module audits
+    
+    Args:
+        return_results: If True, return detailed results for each check
+    
+    Returns:
+        bool: True if all checks passed, False otherwise
+        list: (Optional) List of (section, description, passed) tuples if return_results is True
     """
     print("\n===== CIS Ubuntu 22.04 LTS Benchmark - Section 1.1.1 Filesystem Kernel Modules Audit =====")
     
@@ -605,6 +612,8 @@ def run_all_audits():
                 print(f"    - {section} {description}")
         print("\nRun with remediation functions to fix the issues.")
     
+    if return_results:
+        return results
     return passed_count == total_count
 
 

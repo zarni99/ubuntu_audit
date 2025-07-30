@@ -55,7 +55,7 @@ def check_gpg_keys():
     stdout, _, _ = _run_command("apt-key list")
     
     # Check if there are keys in /etc/apt/trusted.gpg.d/
-    trusted_gpg_files, _, _ = _run_command("ls -l /etc/apt/trusted.gpg.d/ | grep -E '\.(gpg|asc)$'")
+    trusted_gpg_files, _, _ = _run_command("ls -l /etc/apt/trusted.gpg.d/ | grep -E '\\.(gpg|asc)$'")
     
     # Check if there are keys defined in sources.list files
     sources_with_keys, _, _ = _run_command("grep -r 'signed-by=' /etc/apt/sources.list /etc/apt/sources.list.d/")

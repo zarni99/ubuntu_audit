@@ -9,9 +9,27 @@ and remediation modules for Ubuntu 22.04 LTS.
 Usage:
     python3 cis_audit.py audit [module_name]     # Run audit checks for specific module or all
     python3 cis_audit.py remediate [module_name] # Run remediations for specific module or all
+    python3 cis_audit.py --help-modules         # List all available modules and submodules
     
-    Optional flags:
-    --technical  # Display results in technical format instead of user-friendly format (which is now the default)
+Optional flags:
+    --technical  # Display results in technical format instead of user-friendly format
+    --modules MODULE1 MODULE2 ...  # Specify multiple modules to audit/remediate
+
+Examples:
+    # Run all audit checks with user-friendly output
+    python3 cis_audit.py audit
+
+    # Run audit checks for a specific module with technical output
+    python3 cis_audit.py audit package_management --technical
+
+    # Run audit checks for multiple specific modules
+    python3 cis_audit.py audit --modules package_management bootloader
+
+    # Run all remediations with user-friendly output
+    python3 cis_audit.py remediate
+
+    # Run remediations for a specific module
+    python3 cis_audit.py remediate bootloader
 """
 
 # ANSI color codes
@@ -529,24 +547,87 @@ def run_remediations(target_module="all", user_friendly=True):
     return True
 
 
+def list_available_modules():
+    """
+    Print a formatted list of all available modules and submodules
+    """
+    print("\nAvailable Modules:\n")
+    print("Module Groups:")
+    for module_group in MODULES:
+        print(f"  - {module_group['name']}")
+        print(f"    Description: Group of modules for {module_group['name']} security checks")
+        print("    Submodules:")
+        for submodule in module_group["submodules"]:
+            print(f"      - {submodule['name']}")
+            print(f"        Title: {submodule['title']}")
+            print(f"        Description: {submodule['description']}")
+        print()
+
 def main():
     """
     Main function to parse arguments and run appropriate functions
     """
-    parser = argparse.ArgumentParser(description="CIS Ubuntu 22.04 LTS Benchmark Audit and Remediation Tool")
-    parser.add_argument("action", choices=["audit", "remediate"], help="Action to perform")
+    parser = argparse.ArgumentParser(
+        description="CIS Ubuntu 22.04 LTS Benchmark Audit and Remediation Tool",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+Examples:
+  # Run all audit checks with user-friendly output
+  python3 cis_audit.py audit
+
+  # Run audit checks for a specific module with technical output
+  python3 cis_audit.py audit package_management --technical
+
+  # Run audit checks for a specific submodule
+  python3 cis_audit.py audit repositories
+
+  # Run all remediations with user-friendly output
+  python3 cis_audit.py remediate
+
+  # Run remediations for a specific module
+  python3 cis_audit.py remediate bootloader
+
+  # List all available modules and submodules
+  python3 cis_audit.py --help-modules
+'''
+    )
+    
+    # Add a mutually exclusive group for the main action vs. help-modules
+    action_group = parser.add_mutually_exclusive_group(required=True)
+    action_group.add_argument("action", choices=["audit", "remediate"], help="Action to perform", nargs="?", default=None)
+    action_group.add_argument("--help-modules", action="store_true", help="List all available modules and submodules")
+    
     parser.add_argument("module", nargs="?", default="all", help="Module to audit/remediate (default: all)")
     parser.add_argument("--technical", action="store_true", help="Display results in technical format instead of user-friendly format")
+    parser.add_argument("--modules", nargs="+", help="Specify multiple modules to audit/remediate")
     
     args = parser.parse_args()
+    
+    # Handle the --help-modules flag
+    if args.help_modules:
+        list_available_modules()
+        return
     
     # Default to user-friendly output unless --technical flag is specified
     user_friendly = not args.technical
     
-    if args.action == "audit":
-        run_audits(args.module, user_friendly)
-    elif args.action == "remediate":
-        run_remediations(args.module, user_friendly)
+    # Handle multiple modules if specified with --modules
+    if args.modules:
+        all_passed = True
+        for module in args.modules:
+            if args.action == "audit":
+                result = run_audits(module, user_friendly)
+                if not result:
+                    all_passed = False
+            elif args.action == "remediate":
+                run_remediations(module, user_friendly)
+        return all_passed
+    else:
+        # Handle single module specified as positional argument
+        if args.action == "audit":
+            return run_audits(args.module, user_friendly)
+        elif args.action == "remediate":
+            return run_remediations(args.module, user_friendly)
 
 
 if __name__ == "__main__":
